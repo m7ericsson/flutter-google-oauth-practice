@@ -20,21 +20,36 @@ class MyApp extends StatelessWidget {
 
 class RandomWords extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => RandomWordsState();
+  State<StatefulWidget> createState() => _RandomWordsState();
 }
 
-class RandomWordsState extends State<RandomWords> {
+class _RandomWordsState extends State<RandomWords> {
   @override
   Widget build(BuildContext context) {
     final List<WordPair> _suggestions = <WordPair>[];
+    final _saved = Set<WordPair>();
     final TextStyle _biggerFont = const TextStyle(fontSize: 18);
 
     Widget _buildRow(WordPair pair) {
+      final alreadySaved = _saved.contains(pair);
       return ListTile(
           title: Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ));
+            pair.asPascalCase,
+            style: _biggerFont,
+          ),
+          trailing: Icon(
+            alreadySaved ? Icons.favorite : Icons.favorite_border,
+            color: alreadySaved ? Colors.red : null,
+          ),
+          onTap: () {
+            setState(() {
+              if (alreadySaved) {
+                _saved.remove(pair);
+              } else {
+                _saved.add(pair);
+              }
+            });
+          });
     }
 
     Widget _buildSuggestions() {
